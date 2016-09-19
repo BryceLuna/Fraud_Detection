@@ -14,7 +14,7 @@ def clean_data(data_frame,columns_lst):
     df['country'] = df.country.map(lambda x: 'unknown' if x == '' else str(x))
     df['country_unknown'] = df.country.map(lambda x: 1 if x =='unknown' else 0)
 
-    #dropping obcure countries, get the top 4 most common countries
+    #dropping obscure countries, get the top 4 most common countries
     countries_lst = df.country.value_counts()[:4].index.values
     df['country'] = df.country.map(lambda x: 'other' if x not in country_lst else x)
 
@@ -24,11 +24,17 @@ def clean_data(data_frame,columns_lst):
     df['live'] = df['email_domain'].str.contains('live').apply(lambda x: 0 if x == False else 1)
     df.drop('email_domain', axis=1,inplace=1)
 
-
     df.org_facebook.fillna(value=-1,inplace=1)
 
     df['org_nameQ'] = df.org_name.map(lambda x: 0 if x == '' else 1)
     df.drop('org_name',axis=1,inplace=1)
+
+    df['payout_type'] = df.payout_type.map(lambda x: 'unknown' if x =='' else x)
+
+    #flag if there isn't a venue name
+    df.venue_name.fillna(value='',inplace=1)
+    df['venue_nameQ'] = df.venue_name.map(lambda x: 0 if x =='' else 1)
+    df.drop('venue_name',axis=1,)
 
 #clean all the varibles then change their datatypes then do dummies
 
