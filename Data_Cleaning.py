@@ -1,11 +1,12 @@
 import pandas as pd
 
-'''Notes:
-Check to see the relationship between NA values in the sale duration and
-fraud - might want to flag if negative or NA
-Need to check if features are on the same scale
-Need to do a scatter plot - some of the variables you've flagged could be
-highly correlated if there was an error in the system
+'''
+Notes:
+1. Handle minority class
+2. Split data
+3. Scale data as needed
+4. Do NLP on description
+
 '''
 #Data Cleaning
 def clean_data(data_frame,columns_lst):
@@ -73,6 +74,7 @@ def clean_data(data_frame,columns_lst):
     #delivery method 1 is negatively correlated with method 0
     df.drop('delivery_method_1',axis=1,inplace=1)
     return df
+    
 
 def main():
     original_df = pd.read_json('data/train_new.json')
