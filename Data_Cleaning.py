@@ -1,4 +1,6 @@
 import pandas as pd
+from bs4 import BeautifulSoup
+from unidecode import unidecode
 
 '''
 Notes:
@@ -6,7 +8,6 @@ Notes:
 2. Split data
 3. Scale data as needed
 4. Do NLP on description
-
 '''
 #Data Cleaning
 def clean_data(data_frame,columns_lst):
@@ -16,6 +17,9 @@ def clean_data(data_frame,columns_lst):
     df = data_frame.copy()
     df.drop(columns_lst,axis=1,inplace=1)
 
+    #Target Variable
+    df['acct_type'] = df['acct_type'].map(lambda x: 0 if 'fraud' not in x else 1)
+    
     #Flag if the country variable doesn't match the venue_country
     #Note:will not flag if both are null
     df['diff_country'] = (df['venue_country'] != df['country']).apply(lambda x: 0 if x == False else 1)
@@ -75,6 +79,10 @@ def clean_data(data_frame,columns_lst):
     df.drop('delivery_method_1',axis=1,inplace=1)
     return df
     
+def clean_description(txt):
+    soup = BeautifulSoup(txt, 'html.parser')
+    return unidecode(soup.text)
+#.translate(None, string.punctuation) sklearn will ignore punctuation by default
 
 def main():
     original_df = pd.read_json('data/train_new.json')
@@ -84,7 +92,12 @@ def main():
     'previous_payouts','show_map','sale_duration2','user_type','venue_address',\
     'venue_state','description','event_end','event_published','currency']
     df = clean_data(original_df,columns)
-    df.to_csv("C:/Users/Anon/Desktop/clean_df.csv",index=False)
+    df_text = pd.DataFrame(original_df['description'].apply(clean_description))
+    df_text['acct_type'] = df['acct_type']
+    #df_text = original_df['description'].apply(clean_description)
+    df_text.to_pickle('data/df_text')
+    df.to_pickle('data/df_clean')
+    #df.to_csv("C:/Users/Anon/Desktop/clean_df.csv",index=False)
 
 
 if __name__ == '__main__':
