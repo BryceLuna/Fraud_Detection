@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import string
 from unidecode import unidecode
-
+import pandas as pd
 
 def clean_description(txt):
     soup = BeautifulSoup(txt, 'html.parser')
@@ -10,8 +10,7 @@ def clean_description(txt):
 
 
 def main():
-    df_original = pd.read_json('data/train_new.json')
-    df = df_original[['acct_type','description']]
+    df = pd.read_json('data/train_new.json')
     df['text'] = df.description.map(lambda x: clean_desciption)
     
 if __name__ == '__main__':
