@@ -19,7 +19,7 @@ def clean_data(data_frame,columns_lst):
 
     #Target Variable
     df['acct_type'] = df['acct_type'].map(lambda x: 0 if 'fraud' not in x else 1)
-    
+
     #Flag if the country variable doesn't match the venue_country
     #Note:will not flag if both are null
     df['diff_country'] = (df['venue_country'] != df['country']).apply(lambda x: 0 if x == False else 1)
@@ -78,7 +78,7 @@ def clean_data(data_frame,columns_lst):
     #delivery method 1 is negatively correlated with method 0
     df.drop('delivery_method_1',axis=1,inplace=1)
     return df
-    
+
 def clean_description(txt):
     soup = BeautifulSoup(txt, 'html.parser')
     return unidecode(soup.text)
@@ -95,8 +95,8 @@ def main():
     df_text = pd.DataFrame(original_df['description'].apply(clean_description))
     df_text['acct_type'] = df['acct_type']
     #df_text = original_df['description'].apply(clean_description)
-    df_text.to_pickle('data/df_text')
-    df.to_pickle('data/df_clean')
+    df_text.to_pickle('data/df_text.pkl')
+    df.to_pickle('data/df_clean.pkl')
     #df.to_csv("C:/Users/Anon/Desktop/clean_df.csv",index=False)
 
 
