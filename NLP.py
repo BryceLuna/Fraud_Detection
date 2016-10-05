@@ -5,13 +5,13 @@ import pandas as pd
 
 def clean_description(txt):
     soup = BeautifulSoup(txt, 'html.parser')
-    return unidecode(soup.txt).translate(None, string.punctuation)
+    return unidecode(soup.text).translate(None, string.punctuation)
     
 
 
 def main():
     df = pd.read_json('data/train_new.json')
-    df['text'] = df.description.map(lambda x: clean_desciption)
+    df['text'] = df.description.map(lambda x: clean_description)
     
 if __name__ == '__main__':
     main()
