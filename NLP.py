@@ -1,4 +1,5 @@
 import pandas as pd
+import cPickle as pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.cross_validation import train_test_split
@@ -21,12 +22,12 @@ def build_model(df):
     return vectorizer, model
 
 def main():
-    df = pd.read_pickle('data/df_text')
+    df = pd.read_pickle('data/df_text.pkl')
     vectorizer, mnb_model = build_model(df)
     with open('models/vectorizer.pkl','w') as v:
-        pickle.dumps(vectorizer,v)
+        pickle.dump(vectorizer,v)
     with open('models/mnb_model.pkl','w') as m:
-        pickle.dumps(mnb_model,m)
+        pickle.dump(mnb_model,m)
 
 
 if __name__ == '__main__':
