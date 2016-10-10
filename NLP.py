@@ -6,7 +6,7 @@ from sklearn.cross_validation import train_test_split
 
 '''
 Notes:
-condider using CountVectorizer to take into account description length
+consider using CountVectorizer instead of TF-IDF to account for description length
 consider stemming and lemmatizing
 should experiment with different alpha's
 '''
@@ -20,6 +20,12 @@ def build_model(df):
     model = MultinomialNB(alpha=.01)
     model.fit(tf_mat,y_train)
     return vectorizer, model
+
+def generate_nlp_prob(vectorizer, model, description):
+    mat = vectorizer.fit_transform(description)
+    y_prob = model.predict_proba(mat)
+    return y_prob
+
 
 def main():
     df = pd.read_pickle('data/df_text.pkl')
