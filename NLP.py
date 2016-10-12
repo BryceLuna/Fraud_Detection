@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import cPickle as pickle
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -21,9 +22,9 @@ def build_model(df):
     model.fit(tf_mat,y_train)
     return vectorizer, model
 
-def generate_nlp_prob(vectorizer, model, description):
-    mat = vectorizer.fit_transform(description)
-    y_prob = model.predict_proba(mat)
+def generate_nlp_prob(vectorizer, model, df_text):
+    mat = vectorizer.transform(df_text['description']) #fit_transform?
+    y_prob = np.transpose(model.predict_proba(mat))[1]
     return y_prob
 
 
@@ -34,6 +35,8 @@ def main():
         pickle.dump(vectorizer,v)
     with open('models/mnb_model.pkl','w') as m:
         pickle.dump(mnb_model,m)
+    with open('data/y_prob.pkl','w') as f:
+        pickle.dump(generate_nlp_prob(vectorizer, mnb_model, df),f)
 
 
 if __name__ == '__main__':
