@@ -4,12 +4,14 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.cross_validation import train_test_split
 from imblearn.over_sampling import SMOTE
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import StandardScaler
 
 '''
 Notes:
-consider using SMOTE to balance the classes
-might be data-leakage if you don't split the same way as you did for NLP
-need to transform body_length varible in same way as training 
+need to transform body_length varible and any other continuous numeric variables
+Don't forget cross-validation
 '''
 
 def split_data(df):
@@ -24,9 +26,29 @@ def split_data(df):
     X_train_resampled, y_train_resampled = sm.fit_sample(X_test,y_test)
     return X_train_resampled, y_train_resampled, X_train_resampled, y_train_resampled
 
-def build_Classifier(model,params={}):
+def transform_body_length(X_train, X_test, feature):
+    '''
+    normalizes the body_length variable
+    '''
+    scaler = StandardScaler()
+    scaler.fit_transform()
+    scaler.transform()
     
+    pass
 
+def grid_search(model, X, y, params, scoring):
+    '''
+    returns the best parameters of the classification model 
+    '''
+
+    clf = GridSearchCV(model, params, scoring=scoring)
+    clf.fit(X,y)
+    pass
+
+def build_classifier(model,params={}):
+    model.fit(**params)
+    pass
+    
 def main():
     # with open('models/vectorizer.pkl') as f:
     #     vectorizer = pickle.load(f)
@@ -38,8 +60,10 @@ def main():
         y_prob = pickle.load(f)
     df['fraud_prob'] = y_prob
     X_train, X_test, y_train, y_test = split_data(df)
+    transform_body_length(X_train, X_test)
+
     
-    build_Classifier()
+    build_Classifier(X_train, y_train, params)
     
 
 if __name__ == '__main__':
