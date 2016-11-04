@@ -4,10 +4,6 @@ from unidecode import unidecode
 
 '''
 Notes:
-1. Handle minority class
-2. Split data
-3. Scale data as needed
-4. Do NLP on description
 '''
 #Data Cleaning
 def clean_data(data_frame,columns_lst):
@@ -50,8 +46,8 @@ def clean_data(data_frame,columns_lst):
     df['event_created'] = pd.to_datetime(df['event_created'], unit='s')
     df['event_start'] = pd.to_datetime(df['event_start'], unit='s')
 
-    df['user_create_to_start'] = df['event_start'] - df['user_created']
-    df['create_to_start'] = df['event_start'] - df['event_created']
+    df['user_create_to_start'] = (df['event_start'] - df['user_created']).dt.days
+    df['create_to_start'] = (df['event_start'] - df['event_created']).dt.days
     df.drop(['event_created','event_start','user_created'], axis=1,inplace=1)
 
     df.org_facebook.fillna(value=-1,inplace=1)
