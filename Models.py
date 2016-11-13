@@ -51,12 +51,12 @@ def standardize_variables(X_train, X_test, numerical_lst):
     test_mat[:,numerical_lst] = scaler.transform(test_mat[:,numerical_lst])
     return train_mat, test_mat
 
-def parameter_search(model, X, y, params, metric):
+def parameter_search(model, X, y, params, metric, n):
     '''
     returns the best parameters of the classification model
     '''
     random_search = RandomizedSearchCV(model, param_distributions=params, \
-    scoring = metric, n_jobs=3)
+    scoring = metric, n_jobs=3, n_iter=n)
     random_search.fit(X, y)
     return random_search
 
@@ -91,12 +91,12 @@ if __name__ == '__main__':
     #Logistic Regression
     logistic_params = {"C":[1e-4,1e-3,1e-2,1e-1,1,1e2,1e3,1e4]}
     logistic = LogisticRegression()
-    parameter_search(Logistic, X_train_re_std, y_train_resampled, logistic_params, 'f1')
+    logistic_searched = parameter_search(\
+    logistic, X_train_re_std, y_train_resampled, logistic_params, 'f1', 6)
     #Random Forest
-    param_dist = {"max_depth": [3, None],
-              "max_features": sp_randint(1, 11),
-              "min_samples_split": sp_randint(1, 11),
-              "min_samples_leaf": sp_randint(1, 11),
-              "bootstrap": [True, False],
-              "criterion": ["gini", "entropy"]}
-    #logistc_model = grid_search(LogisticRegression, X_train_std, y_train_resampled,{}, )
+    #param_dist = {"max_depth": [3, None],
+    #          "max_features": sp_randint(1, 11),
+    #          "min_samples_split": sp_randint(1, 11),
+    #          "min_samples_leaf": sp_randint(1, 11),
+    #          "bootstrap": [True, False],
+    #          "criterion": ["gini", "entropy"]}
