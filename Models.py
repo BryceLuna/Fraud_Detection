@@ -13,12 +13,13 @@ from sklearn.preprocessing import StandardScaler
 '''
 Notes:
 -Consider transforming varibles to be on same scale (depends on algo)
--It's important to train on balanced classes
--Don't know if it's necessary to resample the testing set
 -Consider binning non-continuous variables
 -You need to split in the same way you did for NLP
--Think about undersampling instead of over-sampling
+-Think about undersampling instead of over-sampling or giving more weight to minority class
 -Perhaps try and using rounding if using over-sampling minority class
+-Consider using LogisticRegressionCV for searching over Cs
+-Perhas could have used class_weight and an intercept to avoid scaling and
+ resampling for Logistic Regression
 '''
 
 def split_data(df):
@@ -28,14 +29,15 @@ def split_data(df):
     y = df['acct_type']
     X = df.drop(['acct_type'],axis=1)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
-    #X_train_resampled, y_train_resampled = sm.fit_sample(X_test,y_test)
-    return X_train, X_test, y_train, y_test #X_train_resampled, y_train_resampled, X_train_resampled, y_train_resampled
+    return X_train, X_test, y_train, y_test
 
 def resample_data(X, y, categorical_lst):
     sm = SMOTE(kind='regular')
     X_train_resampled, y_train_resampled = sm.fit_sample(X,y)
     #rounding categorical variables
     X_train_resampled[:,categorical_lst] = np.round(X_train_resampled[:,categorical_lst])
+    #converting to int8
+    X_train_resampled[:,categorical_lst] = X_train_resampled[:,categorical_lst].astype(np.int8)
     return X_train_resampled, y_train_resampled
 
 def standardize_variables(X_train, X_test, numerical_lst):
@@ -49,13 +51,14 @@ def standardize_variables(X_train, X_test, numerical_lst):
     test_mat[:,numerical_lst] = scaler.transform(test_mat[:,numerical_lst])
     return train_mat, test_mat
 
-def grid_search(model, X, y, params, scoring):
+def parameter_search(model, X, y, params, metric):
     '''
     returns the best parameters of the classification model
     '''
-    clf = GridSearchCV(model, params, scoring=scoring)
-    clf.fit(X,y)
-    pass
+    random_search = RandomizedSearchCV(model, param_distributions=params, \
+    scoring = metric, n_jobs=3)
+    random_search.fit(X, y)
+    return random_search
 
 def build_classifier(model,params={}):
     model.fit(**params)
@@ -66,15 +69,12 @@ def main():
     #     vectorizer = pickle.load(f)
     # with open('models/mnb_model.pkl') as m:
     #     mnb_model = pickle.load(m)
-    #with open('data/df_clean.pkl','r') as d:
     df = pd.read_pickle('data/df_clean.pkl')
     with open('data/y_prob.pkl','r') as f:
         y_prob = pickle.load(f)
     df['fraud_prob'] = y_prob
     X_train, X_test, y_train, y_test = split_data(df)
     transform_body_length(X_train, X_test)
-
-    build_Classifier(X_train, y_train, params)
 
 
 if __name__ == '__main__':
@@ -87,9 +87,11 @@ if __name__ == '__main__':
     df['fraud_prob'] = y_prob
     X_train, X_test, y_train, y_test = split_data(df)
     X_train_resampled, y_train_resampled = resample_data(X_train, y_train, categorical_lst)
-    X_train_std, X_test_std = standardize_variables(X_train_resampled, X_test, numerical_lst)
+    X_train_re_std, X_test_re_std = standardize_variables(X_train_resampled, X_test, numerical_lst)
     #Logistic Regression
-    logistic_params = {}
+    logistic_params = {"C":[1e-4,1e-3,1e-2,1e-1,1,1e2,1e3,1e4]}
+    logistic = LogisticRegression()
+    parameter_search(Logistic, X_train_re_std, y_train_resampled, logistic_params, 'f1')
     #Random Forest
     param_dist = {"max_depth": [3, None],
               "max_features": sp_randint(1, 11),
