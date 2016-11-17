@@ -6,8 +6,9 @@ from sklearn.metrics import classification_report
 from sklearn.cross_validation import train_test_split
 from imblearn.over_sampling import SMOTE
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import RandomizedSearchCV
-#from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 
 '''
@@ -32,13 +33,16 @@ def split_data(df):
     return X_train, X_test, y_train, y_test
 
 def resample_data(X, y, categorical_lst):
+    '''
+    up-samples minority class
+    '''
     sm = SMOTE(kind='regular')
-    X_train_resampled, y_train_resampled = sm.fit_sample(X,y)
+    X_train_re, y_train_re = sm.fit_sample(X,y)
     #rounding categorical variables
-    X_train_resampled[:,categorical_lst] = np.round(X_train_resampled[:,categorical_lst])
+    X_train_re[:,categorical_lst] = np.round(X_train_re[:,categorical_lst])
     #converting to int8
-    X_train_resampled[:,categorical_lst] = X_train_resampled[:,categorical_lst].astype(np.int8)
-    return X_train_resampled, y_train_resampled
+    #X_train_re[:,categorical_lst] = X_train_re[:,categorical_lst].astype(np.int8)
+    return X_train_re, y_train_re
 
 def standardize_variables(X_train, X_test, numerical_lst):
     '''
@@ -65,10 +69,6 @@ def build_classifier(model,params={}):
     pass
 
 def main():
-    # with open('models/vectorizer.pkl') as f:
-    #     vectorizer = pickle.load(f)
-    # with open('models/mnb_model.pkl') as m:
-    #     mnb_model = pickle.load(m)
     df = pd.read_pickle('data/df_clean.pkl')
     with open('data/y_prob.pkl','r') as f:
         y_prob = pickle.load(f)
@@ -80,7 +80,7 @@ def main():
 if __name__ == '__main__':
     #main()
     numerical_lst = [0,4,6,11,12] #starts at zero - dropped acct_type
-    categorical_lst = [1,2,3,5,7,8,9,10,13,14,15,16,17,18,19,20,21] #prob (22) left out
+    categorical_lst = [1,2,3,5,7,8,9,10,13,14,15,16,17,18,19,20] #prob (21) left out
     df = pd.read_pickle('data/df_clean.pkl')
     with open('data/y_prob.pkl','r') as f:
         y_prob = pickle.load(f)
@@ -94,6 +94,7 @@ if __name__ == '__main__':
     logistic_searched = parameter_search(\
     logistic, X_train_re_std, y_train_resampled, logistic_params, 'f1', 6)
     #Random Forest
+    RandomForestClassifier(n_estimators=200, oob_score=True, n_jobs=3)
     #param_dist = {"max_depth": [3, None],
     #          "max_features": sp_randint(1, 11),
     #          "min_samples_split": sp_randint(1, 11),
