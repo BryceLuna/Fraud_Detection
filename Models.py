@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import cPickle as pickle
+from scipy.stats import randint as sp_randint
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from sklearn.cross_validation import train_test_split
@@ -15,9 +16,9 @@ from sklearn.preprocessing import StandardScaler
 Notes:
 -Consider transforming varibles to be on same scale (depends on algo)
 -Consider binning non-continuous variables
--You need to split in the same way you did for NLP
+-Split in the same way you did for NLP
 -Think about undersampling instead of over-sampling or giving more weight to minority class
--Perhaps try and using rounding if using over-sampling minority class
+-Try rounding if over-sampling minority class
 -Consider using LogisticRegressionCV for searching over Cs
 -Perhas could have used class_weight and an intercept to avoid scaling and
  resampling for Logistic Regression
@@ -55,7 +56,7 @@ def standardize_variables(X_train, X_test, numerical_lst):
     test_mat[:,numerical_lst] = scaler.transform(test_mat[:,numerical_lst])
     return train_mat, test_mat
 
-def parameter_search(model, X, y, params, metric, n):
+def parameter_search(model, X, y, params, metric, n=10):
     '''
     returns the best parameters of the classification model
     '''
@@ -88,16 +89,36 @@ if __name__ == '__main__':
     X_train, X_test, y_train, y_test = split_data(df)
     X_train_resampled, y_train_resampled = resample_data(X_train, y_train, categorical_lst)
     X_train_re_std, X_test_re_std = standardize_variables(X_train_resampled, X_test, numerical_lst)
+
     #Logistic Regression
     logistic_params = {"C":[1e-4,1e-3,1e-2,1e-1,1,1e2,1e3,1e4]}
     logistic = LogisticRegression()
     logistic_searched = parameter_search(\
-    logistic, X_train_re_std, y_train_resampled, logistic_params, 'f1', 6)
+    logistic, X_train_re_std, y_train_resampled, logistic_params, 'f1', 5)
+    with open('models/logistic_searched.pkl','w') as l:
+        pickle.dump(logistic_searched, l)
+
     #Random Forest
-    RandomForestClassifier(n_estimators=200, oob_score=True, n_jobs=3)
-    #param_dist = {"max_depth": [3, None],
-    #          "max_features": sp_randint(1, 11),
-    #          "min_samples_split": sp_randint(1, 11),
-    #          "min_samples_leaf": sp_randint(1, 11),
-    #          "bootstrap": [True, False],
-    #          "criterion": ["gini", "entropy"]}
+    forest = RandomForestClassifier(n_estimators=200, n_jobs=3)
+    forest_params = {"max_depth": [3, 4, None],
+              "max_features": sp_randint(1, 15),
+              "min_samples_split": sp_randint(1, 11),
+              "min_samples_leaf": sp_randint(1, 20),
+              "bootstrap": [True, False],
+              "criterion": ["gini", "entropy"]}
+    forest_searched = parameter_search(\
+    forest, X_train_re_std, y_train_resampled, forest_params, 'f1')
+    with open('models/randomForest_searched.pkl','w') as f:
+        pickle.dump(forest_searched, f)
+
+    #Gradient Boosting
+    boosting = GradientBoostingClassifier(n_estimators=200)
+    gradient_params = {"max_depth": [1, 2, 3],
+              "max_features": sp_randint(1, 15),
+              "learning_rate": [.1, .2, .5]
+              "min_samples_split": sp_randint(1, 11),
+              "min_samples_leaf": sp_randint(1, 20)}
+    boosting_searched = parameter_search(\
+    boosting, X_train_re_std, y_train_resampled, gradient_params, 'f1')
+    with open('models/boosting_searched.pkl','w') as b:
+        pickle.dump(boosting_searched, b)
