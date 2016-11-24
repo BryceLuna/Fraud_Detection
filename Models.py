@@ -107,7 +107,7 @@ if __name__ == '__main__':
               "bootstrap": [True, False],
               "criterion": ["gini", "entropy"]}
     forest_searched = parameter_search(\
-    forest, X_train_re_std, y_train_resampled, forest_params, 'f1')
+    forest, X_train_resampled, y_train_resampled, forest_params, 'f1')
     with open('models/randomForest_searched.pkl','w') as f:
         pickle.dump(forest_searched, f)
 
@@ -115,10 +115,10 @@ if __name__ == '__main__':
     boosting = GradientBoostingClassifier(n_estimators=200)
     gradient_params = {"max_depth": [1, 2, 3],
               "max_features": sp_randint(1, 15),
-              "learning_rate": [.1, .2, .5]
+              "learning_rate": [.1, .2, .5],
               "min_samples_split": sp_randint(1, 11),
               "min_samples_leaf": sp_randint(1, 20)}
     boosting_searched = parameter_search(\
-    boosting, X_train_re_std, y_train_resampled, gradient_params, 'f1')
+    boosting, X_train_resampled, y_train_resampled, gradient_params, 'f1')
     with open('models/boosting_searched.pkl','w') as b:
         pickle.dump(boosting_searched, b)
