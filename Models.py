@@ -41,8 +41,6 @@ def resample_data(X, y, categorical_lst):
     X_train_re, y_train_re = sm.fit_sample(X,y)
     #rounding categorical variables
     X_train_re[:,categorical_lst] = np.round(X_train_re[:,categorical_lst])
-    #converting to int8
-    #X_train_re[:,categorical_lst] = X_train_re[:,categorical_lst].astype(np.int8)
     return X_train_re, y_train_re
 
 def standardize_variables(X_train, X_test, numerical_lst):
@@ -65,21 +63,8 @@ def parameter_search(model, X, y, params, metric, n=10):
     random_search.fit(X, y)
     return random_search
 
-def build_classifier(model,params={}):
-    model.fit(**params)
-    pass
-
 def main():
-    df = pd.read_pickle('data/df_clean.pkl')
-    with open('data/y_prob.pkl','r') as f:
-        y_prob = pickle.load(f)
-    df['fraud_prob'] = y_prob
-    X_train, X_test, y_train, y_test = split_data(df)
-    transform_body_length(X_train, X_test)
-
-
-if __name__ == '__main__':
-    #main()
+    
     numerical_lst = [0,4,6,11,12] #starts at zero - dropped acct_type
     categorical_lst = [1,2,3,5,7,8,9,10,13,14,15,16,17,18,19,20] #prob (21) left out
     df = pd.read_pickle('data/df_clean.pkl')
@@ -122,3 +107,7 @@ if __name__ == '__main__':
     boosting, X_train_resampled, y_train_resampled, gradient_params, 'f1')
     with open('models/boosting_searched.pkl','w') as b:
         pickle.dump(boosting_searched, b)
+
+    
+if __name__ == '__main__':
+    main()
