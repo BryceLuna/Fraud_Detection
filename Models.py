@@ -20,7 +20,7 @@ Notes:
 -Think about undersampling instead of over-sampling or giving more weight to minority class
 -Try rounding if over-sampling minority class
 -Consider using LogisticRegressionCV for searching over Cs
--Perhas could have used class_weight and an intercept to avoid scaling and
+-Perhaps could have used class_weight and an intercept to avoid scaling and
  resampling for Logistic Regression
 '''
 
