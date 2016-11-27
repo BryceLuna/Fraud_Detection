@@ -63,6 +63,14 @@ def parameter_search(model, X, y, params, metric, n=10):
     random_search.fit(X, y)
     return random_search
 
+def evaluate_model(model, X, y):
+    '''
+    returns the classification report
+    '''
+    y_pred =  model.predict(X)
+    report = classification_report(y, y_pred)
+    return score
+
 def main():
     
     numerical_lst = [0,4,6,11,12] #starts at zero - dropped acct_type
