@@ -3,14 +3,17 @@ import numpy as np
 import cPickle as pickle
 from Load_Data import split_data, resample_data, standardize_variables
 from scipy.stats import randint as sp_randint
-from sklearn.cross_validation import train_test_split
-from imblearn.over_sampling import SMOTE
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.preprocessing import StandardScaler
 
+'''
+-Consider using LogisticRegressionCV for searching over Cs
+-Consider using class_weight and an intercept to avoid scaling and
+ resampling for Logistic Regression
+ '''
 
 def parameter_search(model, X, y, params, metric, n=10):
     '''

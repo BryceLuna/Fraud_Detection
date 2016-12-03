@@ -15,11 +15,15 @@ def evaluate_model(model, X, y):
     '''
     y_pred =  model.predict(X)
     report = classification_report(y, y_pred)
-    return score
+    return report
 
 
 def main():
+    pass
 
+
+if __name__ == '__main__':
+    #main()
     numerical_lst = [0,4,6,11,12] #starts at zero - dropped acct_type
     categorical_lst = [1,2,3,5,7,8,9,10,13,14,15,16,17,18,19,20] #prob (21) left out
     df = pd.read_pickle('data/df_clean.pkl')
@@ -34,18 +38,20 @@ def main():
         logistic_params = pickle.load(l)
 
     logistic_model = LogisticRegression(**logistic_params.best_params_)
+    logistic_model.fit(X_train_re_std, y_train_resampled)
+    logistic_report = evaluate_model(logistic_model, X_test, y_test)
+
 
     with open('models/randomForest_searched.pkl','r') as b:
         rf_params = pickle.load(b)
 
-    rf_model = RandomForestClassifier(**rf_params.best_params_, n_estimators=200, n_jobs=3)
+    rf_model = RandomForestClassifier(n_estimators=200, n_jobs=3, **rf_params.best_params_)
+    rf_model.fit(X_train_resampled, y_train_resampled)
+    rf_report = evaluate_model(rf_model, X_test, y_test)
 
     with open('models/boosting_searched.pkl','r') as b:
         boosting_params = pickle.load(b)
 
-    boosting_model = GradientBoostingClassifier(**boosting_params.best_params_, n_estimators = 200)
-
-
-
-if __name__ == '__main__':
-    main()
+    boosting_model = GradientBoostingClassifier(n_estimators = 200, **boosting_params.best_params_)
+    boosting_model.fit(X_train_resampled, y_train_resampled)
+    boosting_report = evaluate_model(boosting_model, X_test, y_test)

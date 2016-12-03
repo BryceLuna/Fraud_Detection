@@ -17,9 +17,6 @@ Notes:
 -Split in the same way you did for NLP
 -Think about undersampling instead of over-sampling or giving more weight to minority class
 -Try rounding if over-sampling minority class
--Consider using LogisticRegressionCV for searching over Cs
--Consider using class_weight and an intercept to avoid scaling and
- resampling for Logistic Regression
 '''
 
 def split_data(df):
