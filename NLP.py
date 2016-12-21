@@ -5,12 +5,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.cross_validation import train_test_split
 
-'''
-Notes:
-consider using CountVectorizer instead of TF-IDF to account for description length
-consider stemming and lemmatizing
-should experiment with different alpha's
-'''
 
 def build_model(df):
     X = df['description']
