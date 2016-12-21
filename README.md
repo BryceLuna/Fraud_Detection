@@ -42,7 +42,7 @@ A html text description of each user's event was included in the data as one of 
 The goal of NLP.py was to generate a new feature variable, probability of fraud, from the event description.  Each event text was converted to a TF-IDF vector.  The matrix resulting from the transformation was then used to train a Multinomial Naive Bayes model (MNB).  Finally, each plain text description was passed to the MNB model and a probability of fraud was output.    
 
 Considerations:
-1.  Because TF-IDF was used to generate the word count frequencies, each event's description length was not taken into account.  However, it is plausible that fraudulent event's have on average shorter description lengths.  To account for this possibility the body length variable, a measure of the text length, was retained in Data_Cleaning.py.
+1.  Because TF-IDF was used to generate the word count frequencies, each event's description length was not taken into account.  However, it is plausible that fraudulent events have on average shorter description lengths.  To account for this possibility the body length variable, a measure of the text length, was retained in Data_Cleaning.py.
 
 2.  Stop words were removed when constructing the TF-IDF matrix.  However, stemming and lemmatizing were not done.  It is possible that there might be some performance gain by doing these operations.
 
