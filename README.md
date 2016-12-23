@@ -49,7 +49,14 @@ Considerations:
 3.  The MNB hyper-parameter, alpha, was not chosen in a systematic way.  Further tuning might be possible by searching for an optimal alpha value.
 
 ### Load_Data.py
-TBD
+Load_Data.py contains three functions that pre-process the data for the machine learning models.  These functions, split the data into training and test sets, resample the data, and standardize numeric features.
+
+Considerations:
+1.    The same random seed used in the NLP file was used in split the data.  The concern was that if the data was not split in the same way the engineered variable constructed in NLP.py could perfectly predict fraud on some events depending on if they were in the training set of the MNB model.  
+
+2.  Fraudulent events made up ~10% of the total.  Therefore, the minority class was over-sampled to balance the classes.  The sampling algorithm turned categorical columns into numeric, therefore, these columns were rounded.  Potentially, the imbalanced class issue could have been addressed by setting parameters of the respective learning models.
+
+3.  
 
 ### Search_Models_Params.py
 TBD

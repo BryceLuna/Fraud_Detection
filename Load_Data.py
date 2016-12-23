@@ -10,14 +10,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.preprocessing import StandardScaler
 
-'''
-Notes:
--Consider transforming varibles to be on same scale (depends on algo)
--Consider binning non-continuous variables
--Split in the same way you did for NLP
--Think about undersampling instead of over-sampling or giving more weight to minority class
--Try rounding if over-sampling minority class
-'''
 
 def split_data(df):
     '''
@@ -25,6 +17,7 @@ def split_data(df):
     '''
     y = df['acct_type']
     X = df.drop(['acct_type'],axis=1)
+    #Split in the same way you did for NLP
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=123)
     return X_train, X_test, y_train, y_test
 
