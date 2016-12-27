@@ -13,6 +13,7 @@ from sklearn.preprocessing import StandardScaler
 -Consider using LogisticRegressionCV for searching over Cs
 -Consider using class_weight and an intercept to avoid scaling and
  resampling for Logistic Regression
+-Should use validation set
  '''
 
 def parameter_search(model, X, y, params, metric, n=10):
