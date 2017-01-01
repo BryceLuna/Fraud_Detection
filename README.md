@@ -68,10 +68,10 @@ Considerations:
 
 1.  In the interest of time, a SVM model was not built.  SVM models can be very expensive to train with little advantage over other classification algorithms.
 
-2.  Classes were balanced in Load_Data and therefore, a 'f1' scoring metric was chosen instead of 'f1_weighted.'  
+2.  Classes were balanced in Load_Data.py and therefore, a 'f1' scoring metric was chosen instead of 'f1_weighted.'  
 
 ### Models_Eval.py
-Models_Eval file consists of a single function to evaluate each model on the test data.  The function returns the classification report for each model.
+Models_Eval.py consists of a single function to evaluate each model on the test data.  The function returns the classification report for each model.
 
 ## Results
 Unsurprisingly the random forest and gradient boosting classifiers performed the best.  These two models each had a 'f1' test score of .76.  
