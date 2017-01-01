@@ -37,7 +37,7 @@ A full accounting of the data exploration can be found in the Ipython notebook f
 ### Data_Cleaning.py
 The data did not come pre-cleaned.  Here a function was written to dummify categorical variables, drop variables that were not predictive of the target variable, fill in missing values, set correct data types, and construct new variables.  
 
-A html text description of each user's event was included in the data as one of the features.  A function was written to parse the html and return plain text.  These descriptions were later used to generate a new predictive variable.
+A html text description of each user's event was included in the data as one of the featurnnnes.  A function was written to parse the html and return plain text.  These descriptions were later used to generate a new predictive variable.
 
 ### NLP.py
 The goal of NLP.py was to generate a new feature variable, probability of fraud, from the event description.  Each event text was converted to a TF-IDF vector.  The matrix resulting from the transformation was then used to train a Multinomial Naive Bayes model (MNB).  Finally, each plain text description was passed to the MNB model and a probability of fraud was output.    
@@ -62,10 +62,16 @@ Considerations:
 3.  A logistic regression model was built so the the numeric variables were standardized.  The operation was done to help the gradient descent algorithm to converge faster and because regularization was used.
 
 ### Search_Models_Params.py
-TBD
+Three different classification models were constructed in search_models_params.py: regression, random forest, and gradient boosing.  Model parameters were chosen through randomized search and cross-validation.  
+
+Considerations:
+
+1.  In the interest of time, a SVM model was not built.  SVM models can be very expensive to train with little advantage over other classification algorithms.
+
+2.  Classes were balanced in Load_Data and therefore, a 'f1' scoring metric was chosen instead of 'f1_weighted.'  
 
 ### Models_Eval.py
-TBD
+Models_Eval file consists of a single function to evaluate each model on the test data.  The function returns the classification report for each model.
 
 ## Results
-TBD
+Unsurprisingly the random forest and gradient boosting classifiers performed the best.  These two models each had a 'f1' test score of .76.  
