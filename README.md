@@ -74,4 +74,4 @@ Considerations:
 Models_Eval.py consists of a single function to evaluate each model on the test data.  The function returns the classification report for each model.
 
 ## Results
-Unsurprisingly the random forest and gradient boosting classifiers performed the best.  These two models each had a 'f1' test score of .76.  
+Unsurprisingly, the random forest and gradient boosting classifiers performed the best.  These two models each had a 'f1' test score of .76.  
