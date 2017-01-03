@@ -37,7 +37,7 @@ A full accounting of the data exploration can be found in the Ipython notebook f
 ### Data_Cleaning.py
 The data did not come pre-cleaned.  Here a function was written to dummify categorical variables, drop variables that were not predictive of the target variable, fill in missing values, set correct data types, and construct new variables.  
 
-A html text description of each user's event was included in the data as one of the featurnnnes.  A function was written to parse the html and return plain text.  These descriptions were later used to generate a new predictive variable.
+A html text description of each user's event was included in the data as one of the features.  A function was written to parse the html and return plain text.  These descriptions were later used to generate a new predictive variable.
 
 ### NLP.py
 The goal of NLP.py was to generate a new feature variable, probability of fraud, from the event description.  Each event text was converted to a TF-IDF vector.  The matrix resulting from the transformation was then used to train a Multinomial Naive Bayes model (MNB).  Finally, each plain text description was passed to the MNB model and a probability of fraud was output.    
